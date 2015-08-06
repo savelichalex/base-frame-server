@@ -1,0 +1,28 @@
+{
+  "name": "base-frame-server",
+  "version": "0.0.1",
+  "description": "Base classes for creation your own application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/savelichalex/base-frame.git"
+  },
+  "author": {
+    "name": "Alexey Savelyev"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/savelichalex/base-frame/issues"
+  },
+  "homepage": "https://github.com/savelichalex/base-frame#readme",
+  "dependencies": {
+    "bluebird": "2.9.*",
+    "underscore": "1.8.*",
+    "fastemitter": "0.0.5-0"
+  },
+  "readme": "Base classes for create application. Add some arhitecture\n",
+  "readmeFilename": "README.md"
+}
