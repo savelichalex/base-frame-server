@@ -5,13 +5,12 @@ var defer = require('./util.js').defer,
     fs = require('fs'),
     PORT = +process.env.PORT || 1337;
 
-function HttpServer(routes) {
-    this.routes = routes;
-    this._util.http.createServer(this.createServer).listen(this._util.PORT);
-    console.log('Server listen on port ' + this._util.PORT);
+function HttpServer() {
+
 }
 
 HttpServer.prototype = {
+
     _util: {
         http: http,
         url: url,
@@ -19,29 +18,41 @@ HttpServer.prototype = {
         PORT: PORT
     },
 
-    createServer: function(req, res) {
-        var pathname = url.parse(req.url).pathname,
+    run: function(routes) {
+        var self = this;
+
+        this.routes = routes;
+        this._util.http.createServer(function(req, res) {
+            self.handleRequest(req, res);
+        }).listen(this._util.PORT);
+        console.log('Server listen on port ' + this._util.PORT);
+    },
+
+    handleRequest: function(req, res) {
+        var pathname = this._util.url.parse(req.url).pathname,
             i,
             match = false, //need to check route match
             params = [],
             http_method,
             routes = this.routes;
-
+        console.log(pathname);
         for(i in routes) {
             if(routes.hasOwnProperty(i)) {
                 if(routes[i].regexp.test(pathname) || pathname === i) {
                     match = true;
-                    params = pathname.match(routes[i].regexp).splice(1); //new named parameters
+                    params = pathname.match(routes[i].regexp).splice(1); //TODO: params must be an hash object
 
                     http_method = req.method;
-                    if(http_method === 'GET') {
+                    if(http_method === 'GET' && routes[i].method === 'GET') {
                         this.onGet(req, res, i, params);
-                    } else if(http_method === 'POST') {
+                    } else if(http_method === 'POST' && routes[i].method === 'POST') {
                         this.onPost(req, res, i, params);
-                    } else if(http_method === 'PUT') {
+                    } else if(http_method === 'PUT' && routes[i].method === 'PUT') {
                         this.onPut(req, res, i, params);
-                    } else if(http_method === 'DELETE') {
-                        this.onDelete(req, res);
+                    } else if(http_method === 'DELETE' && routes[i].method === 'DELETE') {
+                        this.onDelete(req, res, i, params);
+                    } else {
+                        match =false;
                     }
                 }
             }
@@ -52,7 +63,7 @@ HttpServer.prototype = {
     },
 
     callAction: function(id, params, req, res) {
-        this.trigger('request:id', {
+        this.trigger('request:' + id, {
             params: params,
             req: req,
             res: res
@@ -60,22 +71,18 @@ HttpServer.prototype = {
     },
 
     onGet: function(req, res, route_id, params) {
-        params.method = 'GET';
         this.callAction(route_id, params, req, res);
     },
 
     onPost: function(req, res, route_id, params) {
-        params.method = 'POST';
         this.callAction(route_id, params, req, res);
     },
 
     onPut: function(req, res, route_id, params) {
-        params.method = 'PUT';
         this.callAction(route_id, params, req, res);
     },
 
     onDelete: function(req, res, route_id, params) {
-        params.method = 'DELETE';
         this.callAction(route_id, params, req, res);
     },
 

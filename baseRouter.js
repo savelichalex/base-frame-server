@@ -2,28 +2,33 @@ var defer = require('./util.js').defer,
     Mediator = require('./Mediator.js')(),
     HttpServer = require('./HttpServer.js');
 
+'use strict';
+
 function BaseRouter() {
 
 };
 
 BaseRouter.prototype = {
 
-    _server: HttpServer,
+    _mediator: Mediator,
+
+    _server: new HttpServer(),
 
     routes: void 0,
 
     init: function() {
         var routes = this.routes,
+            _routes = {},
             uri,
             method,
-            signals;
+            signal;
 
         for(uri in routes) {
             if(routes.hasOwnProperty(uri)) {
-                signals = routes[uri];
+                signal = routes[uri];
 
                 var arr = uri.split(' ');
-                if(arr.length = 1) {
+                if(arr.length === 1) {
                     method = 'GET';
                 } else {
                     method = arr[0];
@@ -55,15 +60,27 @@ BaseRouter.prototype = {
                 handle_str = handle;
                 handle_str = handle_str.replace(/\:[a-zA-Z0-9]+/g, '([\\w\\d\_]+)').replace(/\//g, '\\/'); /*jshint ignore:line */
 
-                routes[handle] = {
-                    signals: signals,
+                _routes[handle] = {
+                    method: method,
                     params: params,
                     regexp: new RegExp('^' + handle_str +'$')
-                }
+                };
+
+                this.setRouteListener(handle, signal);
             }
         }
 
-        this._server = new this._server(routes);
+        this._server.run(_routes);
+    },
+
+    setRouteListener: function(route, signal) {
+        var mediator = this._mediator;
+
+        this._server
+            .on('request:' + route)
+            .then(function(data) {
+                mediator.trigger('request:' + signal, data)
+            });
     }
 };
 
