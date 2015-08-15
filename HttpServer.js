@@ -112,7 +112,7 @@ HttpServer.prototype = {
             }
         }
         if(file_path) {
-            fs.readFile(file_path, function(err, data) {
+            this._util.fs.readFile(file_path, function (err, data) {
                 if (err) {
                     res.writeHead(500, {'Content-type': 'text/plain'});
                     res.end('500: Internal Server Error');
@@ -121,10 +121,11 @@ HttpServer.prototype = {
                 res.end(data);
             });
         } else {
-            fs.readFile('public/404.html', function(err, data) { //TODO: change hardcoded 404 template(must be on config)
+            console.warn(pathname + ' handler not found');
+            /*fs.readFile('public/404.html', function(err, data) { //TODO: change hardcoded 404 template(must be on config)
                 res.writeHead(404);
                 res.end(data);
-            });
+             });*/
         }
     }
 };

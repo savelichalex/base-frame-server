@@ -1,5 +1,6 @@
 var Emitter = require('./Emitter'),
-    Mediator = require('./Mediator')();
+    Mediator = require('./Mediator')(),
+    fs = require('fs');
 
 'use strict';
 
@@ -15,6 +16,10 @@ BaseComponent.prototype = {
     }()),
 
     _globalEmitter: Mediator,
+
+    _util: {
+        fs: fs
+    },
 
     emit: {},
 
@@ -132,7 +137,7 @@ BaseComponent.prototype = {
         this._signals(this.signals);
     },
 
-    parseTemplate: function(data, obj) {
+    parseTemplate: function (data, obj) {
         if(!obj || obj.length === 0) {
             return data;
         }
@@ -152,6 +157,26 @@ BaseComponent.prototype = {
         return data;
     },
 
+    render: function (filename, obj, res) {
+        if (typeof filename === 'object') {
+            var obj = filename,
+                filename = 'index';
+        } else {
+            filename = filename || 'index';
+        }
+        var path = this.dirname + '/views/' + filename + '.html', //hardcode!!!
+            template,
+            self = this;
+        this._util.fs.readFile(path, function (err, data) {
+            if (err) {
+                res.end();
+            } else {
+                template = self.parseTemplate(data, obj);
+                res.writeHead(200, {'Content-type': 'text/html'});
+                res.end(template);
+            }
+        });
+    }
 };
 
 BaseComponent.rootClass();
