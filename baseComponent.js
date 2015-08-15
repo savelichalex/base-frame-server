@@ -159,8 +159,8 @@ BaseComponent.prototype = {
 
     render: function (filename, obj, res) {
         if (typeof filename === 'object') {
-            var obj = filename,
-                filename = 'index';
+            obj = filename;
+            filename = 'index';
         } else {
             filename = filename || 'index';
         }
