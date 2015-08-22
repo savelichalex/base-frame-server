@@ -8,14 +8,25 @@ function MainComponent() {
 
 MainComponent.prototype = {
 
+    'signals': {
+        'global': {
+            'command@mysql:query': 'mysqlQuery'
+        }
+    },
+
     slots: {
         'global': {
             'on@request:testWithParams': defer(function(data) {
                 this.mainService.testMethod();
-                this.render('test', {
-                    id: data.params[0]
-                }, data.res);
-            })
+                var self = this;
+                this.emit.mysqlQuery('SELECT name FROM test WHERE id=' + data.params[0])
+                    .then(function(d) {
+                        console.log(d);
+                        self.render('test', {
+                            id: d.rows[0].name
+                        }, data.res);
+                    });
+            }),
         }
     },
 

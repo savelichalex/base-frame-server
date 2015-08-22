@@ -7,7 +7,6 @@ function BaseService() {
 }
 
 BaseService.prototype = {
-    type: 'service'
 };
 
 BaseService.rootClass();
