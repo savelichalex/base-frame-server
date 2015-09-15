@@ -17,15 +17,12 @@ MainComponent.prototype = {
     slots: {
         'global': {
             'on@request:testWithParams': defer(function(data) {
-                this.mainService.testMethod();
                 var self = this;
-                this.emit.mysqlQuery('SELECT name FROM test WHERE id=' + data.params[0])
-                    .then(function(d) {
-                        console.log(d);
-                        self.render('test', {
-                            id: d.rows[0].name
-                        }, data.res);
-                    });
+                this.mainService.getUser(data.params[0]).then(function (d) {
+                    self.render('test', {
+                        id: d.rows[0].name
+                    }, data.res);
+                });
             }),
         }
     },

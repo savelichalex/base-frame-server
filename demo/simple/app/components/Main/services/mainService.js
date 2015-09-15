@@ -1,15 +1,28 @@
-var BaseService = require('../../../../../../baseService');
+var BaseComponent = require('../../../../../../baseComponent'),
+    defer = require('../../../../../../util').defer;
 
 function MainService() {
-
+    this.init();
 }
 
 MainService.prototype = {
-    testMethod: function () {
-        console.log('this is test method!');
+
+    'signals': {
+        'global': {
+            'command@mysql:query': 'mysqlQuery'
+        }
+    },
+
+    getUser: function (id) {
+        return this.query('SELECT name FROM test WHERE id=' + id);
+    },
+
+    query: function (query) {
+        return this.emit.mysqlQuery(query);
     }
+
 };
 
-MainService.extends(BaseService);
+MainService.extends(BaseComponent);
 
 module.exports = MainService;

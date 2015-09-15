@@ -112,6 +112,7 @@ HttpServer.prototype = {
             }
         }
         if(file_path) {
+            console.log(file_path);
             this._util.fs.readFile(file_path, function (err, data) {
                 if (err) {
                     res.writeHead(500, {'Content-type': 'text/plain'});

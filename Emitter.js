@@ -1,4 +1,4 @@
-var FastEmitter = require('fastemitter'),
+var FastEmitter = require('fastemitter-with-context'),
     Promise = require('bluebird');
 
 "use strict";
