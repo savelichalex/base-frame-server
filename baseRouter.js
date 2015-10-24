@@ -84,6 +84,4 @@ BaseRouter.prototype = {
     }
 };
 
-BaseRouter.rootClass();
-
 module.exports = BaseRouter;

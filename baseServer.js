@@ -1,5 +1,4 @@
-var defer = require('./util.js').defer,
-    Emitter = require('./Emitter.js');
+var Emitter = require('base-components').Emitter;
 
 function BaseServer() {
 
@@ -28,7 +27,5 @@ BaseServer.prototype = {
         return this._emitter.trigger(event, data);
     },
 };
-
-BaseServer.rootClass();
 
 module.exports = BaseServer;

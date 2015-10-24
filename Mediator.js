@@ -1,4 +1,4 @@
-var Emitter = require('./Emitter.js');
+var Emitter = require('base-components').Emitter;
 
 var Mediator = Emitter();
 
